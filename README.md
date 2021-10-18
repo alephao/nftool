@@ -21,11 +21,19 @@ A suite of tools for NFT generative art.
 
 ## Install
 
+### Homebrew on Macos
+
+`brew install alephao/formulae/nftool`
+
 ### Using Go
 
-Clone the repo, change to the root directory and run `go install`
+`go install github.com/alephao/nftool@latest`
 
-Currently you can only install via golang. Other ways to install will come soon.
+Or clone the repository, change to the root folder and run `go install`.
+
+### Manually
+
+Download the binary from the [releases page](https://github.com/alephao/nftool/releases) and move it to your bin path like `/usr/local/bin`.
 
 ## Getting Started
 
