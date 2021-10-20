@@ -83,7 +83,7 @@ func GenerateManyImagesFromCollectionAttributes(width, height, startingIndex int
 		err := GenerateImageFromAttributes(width, height, traitGroup, layersMap, out, saveAsPng)
 		if err != nil {
 			// return err
-			fmt.Printf("failed to generate %s\n", out)
+			fmt.Printf("Failed to generate: %s\nError: %s\n", out, err.Error())
 		}
 	}
 	return nil
