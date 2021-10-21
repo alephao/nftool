@@ -11,8 +11,12 @@ import (
 )
 
 type Config struct {
-	Traits  domain.TraitGroupDescription `json:"traits" yaml:"traits"`
-	PathMap map[string]string            `json:"path_map" yaml:"path_map"`
+	Name         string                       `json:"name" yaml:"name"`
+	Description  string                       `json:"description" yaml:"description"`
+	ExternalLink string                       `json:"external_link" yaml:"external_link"`
+	Image        string                       `json:"image" yaml:"image"`
+	Traits       domain.TraitGroupDescription `json:"traits" yaml:"traits"`
+	PathMap      map[string]string            `json:"path_map" yaml:"path_map"`
 }
 
 // nftool traits dump
@@ -23,8 +27,12 @@ func GenerateTraitGroupDescription(path string, out string) error {
 	}
 
 	config := Config{
-		Traits:  traitGroupDescription,
-		PathMap: pathMap,
+		Name:         "My Collection #{id}",
+		Description:  "An awesome collection",
+		ExternalLink: "https://myexternallink.com",
+		Image:        "ipfs://myHash/{id}",
+		Traits:       traitGroupDescription,
+		PathMap:      pathMap,
 	}
 	return utils.WriteFileAsYaml(config, out)
 }

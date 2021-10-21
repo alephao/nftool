@@ -4,6 +4,8 @@ A suite of tools for NFT generative art.
 
 ## Features
 
+* Metadata
+   * Generate ERC-721 and ERC-1155 compatible metadata
 * Traits/Attributes/Properties Generation
    * Configure custom rarity
    * Generate collection attributes configuration file
@@ -39,6 +41,8 @@ Download the binary from the [releases page](https://github.com/alephao/nftool/r
 ## Getting Started
 
 To get started, install `nftool` following the instructions above and cd to the examples folder in this repo.
+
+You can always use `nftool help [command]` to see all the documentatio and all the options of a command.
 
 First generate the configuration file from the layers folders.
 
@@ -79,6 +83,18 @@ nftool provenance --images ./out/images --out ./out/provenance.json --startingIn
 ```
 
 Note: the startingIndex should be a number smaller than the total amount of items in the collection and it's usually generated on-chain.
+
+Now we need to generate the actual metadata that we'll upload to IPFS (or another storage service).
+
+```
+	mkdir -p ./out/metadata
+	# Generate ERC-721 metadata
+	nftool metadata --collection ./out/collection.json --config ./out/config.yaml --out ./out/metadata
+```
+
+Note: if you want to generate the metadata following the erc-1155 convention for the id/file-name, add the flag --erc1155
+
+Check out the output in `./out/metadata/1`. If you want to change anything, you can do so by editing the values in `./out/config.yaml`.
 
 ## Contributing
 

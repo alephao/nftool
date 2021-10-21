@@ -13,6 +13,7 @@ func NewRootCmd() *cobra.Command {
 	rootCmd.AddCommand(rarityCmd)
 	rootCmd.AddCommand(imgCmd)
 	rootCmd.AddCommand(provenanceCmd)
+	rootCmd.AddCommand(metadataCmd)
 	rootCmd.AddCommand(versionCmd)
 	return rootCmd
 }
