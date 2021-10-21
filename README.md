@@ -13,6 +13,7 @@ A suite of tools for NFT generative art.
 * Image Generation
    * Generate images from collection description
    * Generate images in parallel
+   * Generate only missing images (if you delete a few images from the output folder)
 * Rarity
    * Generate traits rarity
    * Generate collection rarity
