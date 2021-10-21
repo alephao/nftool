@@ -15,7 +15,7 @@ import (
 	"github.com/alephao/nftool/utils"
 )
 
-func GenerateImagesFromCollectionAttributesJson(width, height int, collectionPath, configPath, outDir string, parallel, saveAsPng bool) error {
+func GenerateImagesFromCollectionAttributesJson(width, height, startingIndex int, collectionPath, configPath, outDir string, parallel, saveAsPng, onlyMissing bool) error {
 	var config traits_fs.Config
 	err := utils.LoadYamlFileIntoStruct(configPath, &config)
 	if err != nil {
@@ -26,7 +26,10 @@ func GenerateImagesFromCollectionAttributesJson(width, height int, collectionPat
 	if err != nil {
 		return err
 	}
-	startingIndex := 0
+
+	if onlyMissing {
+		return GenerateMissingImagesFromCollectionAttributes(width, height, collectionAttributes, config.PathMap, outDir, saveAsPng)
+	}
 
 	if parallel {
 		return GenerateManyImagesFromCollectionAttributesParallel(width, height, startingIndex, collectionAttributes, config.PathMap, outDir, saveAsPng)
@@ -36,7 +39,7 @@ func GenerateImagesFromCollectionAttributesJson(width, height int, collectionPat
 }
 
 func GenerateManyImagesFromCollectionAttributesParallel(width, height, startingIndex int, collectionAttributes []traits.TraitGroup, layersMap map[string]string, outputDir string, saveAsPng bool) error {
-	var chunks [][]traits.TraitGroup
+	var chunks []traits.TraitCollection
 	numCpu := runtime.NumCPU()
 	chunkSize := (len(collectionAttributes) + numCpu - 1) / numCpu
 
@@ -55,7 +58,7 @@ func GenerateManyImagesFromCollectionAttributesParallel(width, height, startingI
 	for i, chunk := range chunks {
 		wg.Add(1)
 		startingIndex := i * chunkSize
-		chunkCopy := make([]traits.TraitGroup, chunkSize)
+		chunkCopy := make(traits.TraitCollection, chunkSize)
 		copy(chunkCopy, chunk)
 		go func() {
 			GenerateManyImagesFromCollectionAttributes(width, height, startingIndex, chunkCopy, layersMap, outputDir, saveAsPng)
@@ -83,6 +86,31 @@ func GenerateManyImagesFromCollectionAttributes(width, height, startingIndex int
 		err := GenerateImageFromAttributes(width, height, traitGroup, layersMap, out, saveAsPng)
 		if err != nil {
 			// return err
+			fmt.Printf("Failed to generate: %s\nError: %s\n", out, err.Error())
+		}
+	}
+	return nil
+}
+
+func GenerateMissingImagesFromCollectionAttributes(width, height int, collection traits.TraitCollection, layersMap map[string]string, outputDir string, saveAsPng bool) error {
+	missingIndexes, err := FindMissingIndexes(0, len(collection), outputDir, saveAsPng)
+	if err != nil {
+		return fmt.Errorf("failed to find missing indexes: %s", err.Error())
+	}
+
+	var extension string
+	if saveAsPng {
+		extension = "png"
+	} else {
+		extension = "jpg"
+	}
+
+	for _, missingIndex := range missingIndexes {
+		out := fmt.Sprintf("%s/%d.%s", outputDir, missingIndex, extension)
+		traitGroup := collection[missingIndex]
+		fmt.Printf("Generating %s\n", out)
+		err := GenerateImageFromAttributes(width, height, traitGroup, layersMap, out, saveAsPng)
+		if err != nil {
 			fmt.Printf("Failed to generate: %s\nError: %s\n", out, err.Error())
 		}
 	}
@@ -145,4 +173,40 @@ func GenerateImageFromLayers(width, height int, keys []string, layerPaths []stri
 	}
 
 	return nil
+}
+
+func FindMissingIndexes(from, to int, dir string, png bool) ([]int, error) {
+	if to < from {
+		return nil, fmt.Errorf("%d (from) should not be greater %d (to)", from, to)
+	}
+
+	var extension string
+	if png {
+		extension = "png"
+	} else {
+		extension = "jpg"
+	}
+
+	filesMissing := []int{}
+	i := from
+	for i <= to {
+		path := fmt.Sprintf("%s/%d.%s", dir, i, extension)
+		if !fileExists(path) {
+			filesMissing = append(filesMissing, i)
+		}
+		i++
+	}
+
+	return filesMissing, nil
+}
+
+func fileExists(path string) bool {
+	if _, err := os.Stat(path); err == nil {
+		return true
+	} else if os.IsNotExist(err) {
+		return false
+	} else {
+		// Schrodinger, but return false anyway
+		return false
+	}
 }
