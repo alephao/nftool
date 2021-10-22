@@ -10,6 +10,6 @@ var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version number of nftool",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("nftool v0.2.0")
+		fmt.Println("nftool v0.3.0")
 	},
 }
