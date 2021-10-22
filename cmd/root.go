@@ -14,7 +14,11 @@ func NewRootCmd() *cobra.Command {
 	rootCmd.AddCommand(imgCmd)
 	rootCmd.AddCommand(provenanceCmd)
 	rootCmd.AddCommand(metadataCmd)
+
+	rootCmd.AddCommand(openseaCmd)
+
 	rootCmd.AddCommand(versionCmd)
+
 	return rootCmd
 }
 
