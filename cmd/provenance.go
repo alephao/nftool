@@ -12,9 +12,7 @@ var (
 	provenanceCmd           = &cobra.Command{
 		Use:   "provenance",
 		Short: "Generate the provenace report of a collection",
-		Long: `Generate the provenace report of a collection
-
-nftool provenance --imgs ./imgs --startingIndex 123 --out ./provenance.json
+		Long: `How provenance is generated:
 
 First we generate the hash for each image using a SHA256 algorithm
 
@@ -31,6 +29,10 @@ The provenance report contains
 - concatenated hashes
 - hashes
 - starting index`,
+		Example: `nftool provenance \
+	--imgs ./imgs \
+	--startingIndex 123 \
+	--out ./provenance.json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := provenance.ProvenanceReportFromDir(provenanceImgsDir, provenanceOut, provenanceStartingIndex); err != nil {
 				return err

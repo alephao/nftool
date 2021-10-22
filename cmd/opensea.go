@@ -24,7 +24,12 @@ var (
 	openseaUpdateMaxCores        int
 	openseaUpdateCmd             = &cobra.Command{
 		Use:   "update",
-		Short: "ask opensea to update the metadata of your collection",
+		Short: "Asks opensea to update the metadata of your collection.",
+		Example: `nftool opensea update \
+	--contract 0x0000000000000000000000000000000000000000 \
+	--from 0 \
+	--to 1000 \
+	--parallel 4`,
 		Run: func(cmd *cobra.Command, args []string) {
 			uptadeMetadataInRangeParallel(openseaUpdateContractAddress, openseaUpdateFrom, openseaUpdateTo, openseaUpdateMaxCores)
 		},
@@ -39,7 +44,7 @@ func init() {
 	openseaUpdateCmd.MarkFlagRequired("from")
 	openseaUpdateCmd.Flags().IntVar(&openseaUpdateTo, "to", 0, "the last id for a the range of ids you want to update")
 	openseaUpdateCmd.MarkFlagRequired("to")
-	openseaUpdateCmd.Flags().IntVar(&openseaUpdateMaxCores, "parallel", 1, "divide requests between your cpus, default: 1")
+	openseaUpdateCmd.Flags().IntVar(&openseaUpdateMaxCores, "parallel", 1, "divide requests between your cpus")
 	openseaCmd.AddCommand(openseaUpdateCmd)
 }
 

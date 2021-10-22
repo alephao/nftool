@@ -18,6 +18,10 @@ var (
 	rarityTraitsCmd = &cobra.Command{
 		Use:   "traits",
 		Short: "Generate traits rarity report",
+		Long:  "The report contains the number of appearances of each trait in the collection.",
+		Example: `nftool rarity traits \
+	--collection ./collection.json \
+	--out ./traits_rarity.json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := rarity.MakeTraitRarityReportFromCollectionFile(rarityPath, rarityOut); err != nil {
 				return err
@@ -30,6 +34,10 @@ var (
 	rarityCollectionCmd = &cobra.Command{
 		Use:   "collection",
 		Short: "Generate collection rarity report",
+		Long:  "The report contains all the items in the collection, ordered by most rare from least rare.",
+		Example: `nftool rarity collection \
+	--collection ./out/collection.json \
+	--out ./out/collection_rarity.json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := rarity.MakeCollectionRarityReportFromJson(rarityPath, rarityOut); err != nil {
 				return err

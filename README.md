@@ -21,6 +21,8 @@ A suite of tools for NFT generative art.
    * Generate collection rarity
 * Provenance
    * Generate provenance
+* OpenSea
+   * Update metadata of collection
 
 ## Install
 
@@ -96,19 +98,9 @@ Note: if you want to generate the metadata following the erc-1155 convention for
 
 Check out the output in `./out/metadata/1`. If you want to change anything, you can do so by editing the values in `./out/config.yaml`.
 
-## Usage
+## Documentation
 
-### OpenSea
-
-*Update metadata of a collection on OpenSea*:
-
-```sh
-nftool opensea update \
-   --contract 0x0000000000000000000000000000000000000000 \
-   --from 0 \
-   --to 1000 \
-   --parallel 10 # make up to 10 parallel requests, depending on the number of cores your machine have
-```
+[Link to the generated docs](./docs/docs.md)
 
 ## Contributing
 

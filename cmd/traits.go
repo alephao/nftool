@@ -22,11 +22,7 @@ var (
 	traitsDumpCmd = &cobra.Command{
 		Use:   "dump",
 		Short: "Generate a yaml configuration file from a directory containing all the layers and following the layer naming guidelines.",
-		Long: `Generate a yaml configuration file from a directory containing all the layers and following the layer naming guidelines.
-
-Example: nftool traits dump --path /path/to/layers --out /path/to/config.yaml
-
-Layer Naming Guidelines
+		Long: `Layer Naming Guidelines:
 
 1. Layer Names
 
@@ -68,6 +64,9 @@ If you want a layer to be optional, add a "_" suffix to the folder like so:
 	00-Background_
 
 Then after running 'nftool traits dump', you can change the chance of a trait not beign selected in the generated yaml file, under the "optional_weight" property.`,
+		Example: `nftool traits dump \
+	--layers ./layers \
+	--out ./out/config.yaml`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := traits.GenerateTraitGroupDescription(traitsPath, traitsOut); err != nil {
 				return err
@@ -81,9 +80,10 @@ Then after running 'nftool traits dump', you can change the chance of a trait no
 	traitsMakeCmd    = &cobra.Command{
 		Use:   "make",
 		Short: "Generate a collection from a config file or a folder with the structured layers.",
-		Long: `Generate a collection from a config file or a folder with the structured layers.
-
-Example: nftool traits make --path path/to/layers --out ./collection.json --amount 8888`,
+		Example: `nftool traits make \
+	--amount 10 \
+	--config ./config.yaml \
+	--out ./collection.json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := traits.GenerateTraitCollection(traitsPath, traitsOut, traitsMakeAmount); err != nil {
 				return err
@@ -94,8 +94,9 @@ Example: nftool traits make --path path/to/layers --out ./collection.json --amou
 
 	// traits shuffle
 	traitsShuffleCmd = &cobra.Command{
-		Use:   "shuffle",
-		Short: "shuffle a collection json",
+		Use:     "shuffle",
+		Short:   "shuffle a collection json",
+		Example: `nftool traits shuffle --path ./collection.json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := traits.ShuffleCollection(traitsPath); err != nil {
 				return err
@@ -108,6 +109,10 @@ Example: nftool traits make --path path/to/layers --out ./collection.json --amou
 	traitsMergeCmd = &cobra.Command{
 		Use:   "merge",
 		Short: "Merge multiple attributes files in one, ignoring collisions",
+		Example: `nftool traits merge \
+	--file ./collection_1.json \
+	--file ./collection_2.json \
+	--out ./collection_merged.json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := traits.MergeCollections(traitsPaths, traitsOut); err != nil {
 				return err
@@ -120,6 +125,10 @@ Example: nftool traits make --path path/to/layers --out ./collection.json --amou
 	traitsCollisionsCmd = &cobra.Command{
 		Use:   "collisions",
 		Short: "Find collisions from multiple collection files and generate a report",
+		Example: `nftool traits collisions \
+	--file ./collection_1.json \
+	--file ./collection_2.json \
+	--out ./collision_report.json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := traits.FindCollisions(traitsPaths, traitsOut); err != nil {
 				return err
