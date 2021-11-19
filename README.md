@@ -107,6 +107,16 @@ Check out the output in `./out/metadata/1`. If you want to change anything, you 
 * For requests and questions, please open an issue.
 * PRs accepted.
 
+## Releasing
+
+To release a new version
+
+```
+git tag vx.x.x
+git push origin vx.x.x
+goreleaser release --rm-dist  
+```
+
 ## License
 
 [MIT © Aleph Retamal](LICENSE)
