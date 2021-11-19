@@ -22,6 +22,7 @@ var (
 	imgGenParallel       bool
 	imgGenSaveAsPng      bool
 	imgGenOnlyMissing    bool
+	imgGenTransparent    bool
 	imgGenCmd            = &cobra.Command{
 		Use:   "gen",
 		Short: "Generate images from a collection.json and the layers folder",
@@ -33,7 +34,7 @@ var (
 	--out ./generated-imgs \
 	--parallel`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := imgen.GenerateImagesFromCollectionAttributesJson(imgGenWidth, imgGenHeight, imgGenStartingIndex, imgGenCollectionPath, imgGenConfigPath, imgGenOutDir, imgGenParallel, imgGenSaveAsPng, imgGenOnlyMissing); err != nil {
+			if err := imgen.GenerateImagesFromCollectionAttributesJson(imgGenWidth, imgGenHeight, imgGenStartingIndex, imgGenCollectionPath, imgGenConfigPath, imgGenOutDir, imgGenParallel, imgGenSaveAsPng, imgGenOnlyMissing, imgGenTransparent); err != nil {
 				return err
 			}
 			return nil
@@ -54,6 +55,7 @@ func init() {
 	imgGenCmd.MarkFlagRequired("config")
 	imgGenCmd.Flags().StringVar(&imgGenOutDir, "out", "", "path to the folder where all imgs will be generated")
 	imgGenCmd.MarkFlagRequired("out")
+	imgGenCmd.Flags().BoolVar(&imgGenTransparent, "transparent", false, "use this flag if the background of your nft is transparent")
 	imgGenCmd.Flags().BoolVar(&imgGenParallel, "parallel", false, "generate images in parallel using all your cores")
 	imgGenCmd.Flags().BoolVar(&imgGenSaveAsPng, "png", false, "generate png images instead of jpg images")
 	imgGenCmd.Flags().BoolVar(&imgGenOnlyMissing, "onlyMissing", false, "generate only the images that are missing in the output dir")

@@ -15,7 +15,7 @@ import (
 	"github.com/alephao/nftool/utils"
 )
 
-func GenerateImagesFromCollectionAttributesJson(width, height, startingIndex int, collectionPath, configPath, outDir string, parallel, saveAsPng, onlyMissing bool) error {
+func GenerateImagesFromCollectionAttributesJson(width, height, startingIndex int, collectionPath, configPath, outDir string, parallel, saveAsPng, onlyMissing, transparent bool) error {
 	var config traits_fs.Config
 	err := utils.LoadYamlFileIntoStruct(configPath, &config)
 	if err != nil {
@@ -28,17 +28,17 @@ func GenerateImagesFromCollectionAttributesJson(width, height, startingIndex int
 	}
 
 	if onlyMissing {
-		return GenerateMissingImagesFromCollectionAttributes(width, height, collectionAttributes, config.PathMap, outDir, saveAsPng)
+		return GenerateMissingImagesFromCollectionAttributes(width, height, collectionAttributes, config.PathMap, outDir, saveAsPng, transparent)
 	}
 
 	if parallel {
-		return GenerateManyImagesFromCollectionAttributesParallel(width, height, startingIndex, collectionAttributes, config.PathMap, outDir, saveAsPng)
+		return GenerateManyImagesFromCollectionAttributesParallel(width, height, startingIndex, collectionAttributes, config.PathMap, outDir, saveAsPng, transparent)
 	} else {
-		return GenerateManyImagesFromCollectionAttributes(width, height, startingIndex, collectionAttributes, config.PathMap, outDir, saveAsPng)
+		return GenerateManyImagesFromCollectionAttributes(width, height, startingIndex, collectionAttributes, config.PathMap, outDir, saveAsPng, transparent)
 	}
 }
 
-func GenerateManyImagesFromCollectionAttributesParallel(width, height, startingIndex int, collectionAttributes []traits.TraitGroup, layersMap map[string]string, outputDir string, saveAsPng bool) error {
+func GenerateManyImagesFromCollectionAttributesParallel(width, height, startingIndex int, collectionAttributes []traits.TraitGroup, layersMap map[string]string, outputDir string, saveAsPng, transparent bool) error {
 	var chunks []traits.TraitCollection
 	numCpu := runtime.NumCPU()
 	chunkSize := (len(collectionAttributes) + numCpu - 1) / numCpu
@@ -61,7 +61,7 @@ func GenerateManyImagesFromCollectionAttributesParallel(width, height, startingI
 		chunkCopy := make(traits.TraitCollection, chunkSize)
 		copy(chunkCopy, chunk)
 		go func() {
-			GenerateManyImagesFromCollectionAttributes(width, height, startingIndex, chunkCopy, layersMap, outputDir, saveAsPng)
+			GenerateManyImagesFromCollectionAttributes(width, height, startingIndex, chunkCopy, layersMap, outputDir, saveAsPng, transparent)
 			wg.Done()
 		}()
 	}
@@ -71,7 +71,7 @@ func GenerateManyImagesFromCollectionAttributesParallel(width, height, startingI
 	return nil
 }
 
-func GenerateManyImagesFromCollectionAttributes(width, height, startingIndex int, collectionAttributes []traits.TraitGroup, layersMap map[string]string, outputDir string, saveAsPng bool) error {
+func GenerateManyImagesFromCollectionAttributes(width, height, startingIndex int, collectionAttributes []traits.TraitGroup, layersMap map[string]string, outputDir string, saveAsPng, transparent bool) error {
 	for i, traitGroup := range collectionAttributes {
 		var extension string
 		if saveAsPng {
@@ -83,7 +83,7 @@ func GenerateManyImagesFromCollectionAttributes(width, height, startingIndex int
 		if i%50 == 0 {
 			fmt.Printf("Generating %s\n", out)
 		}
-		err := GenerateImageFromAttributes(width, height, traitGroup, layersMap, out, saveAsPng)
+		err := GenerateImageFromAttributes(width, height, traitGroup, layersMap, out, saveAsPng, transparent)
 		if err != nil {
 			// return err
 			fmt.Printf("Failed to generate: %s\nError: %s\n", out, err.Error())
@@ -92,7 +92,7 @@ func GenerateManyImagesFromCollectionAttributes(width, height, startingIndex int
 	return nil
 }
 
-func GenerateMissingImagesFromCollectionAttributes(width, height int, collection traits.TraitCollection, layersMap map[string]string, outputDir string, saveAsPng bool) error {
+func GenerateMissingImagesFromCollectionAttributes(width, height int, collection traits.TraitCollection, layersMap map[string]string, outputDir string, saveAsPng, transparent bool) error {
 	missingIndexes, err := FindMissingIndexes(0, len(collection), outputDir, saveAsPng)
 	if err != nil {
 		return fmt.Errorf("failed to find missing indexes: %s", err.Error())
@@ -109,7 +109,7 @@ func GenerateMissingImagesFromCollectionAttributes(width, height int, collection
 		out := fmt.Sprintf("%s/%d.%s", outputDir, missingIndex, extension)
 		traitGroup := collection[missingIndex]
 		fmt.Printf("Generating %s\n", out)
-		err := GenerateImageFromAttributes(width, height, traitGroup, layersMap, out, saveAsPng)
+		err := GenerateImageFromAttributes(width, height, traitGroup, layersMap, out, saveAsPng, transparent)
 		if err != nil {
 			fmt.Printf("Failed to generate: %s\nError: %s\n", out, err.Error())
 		}
@@ -117,7 +117,7 @@ func GenerateMissingImagesFromCollectionAttributes(width, height int, collection
 	return nil
 }
 
-func GenerateImageFromAttributes(width, height int, attributes traits.TraitGroup, layersMap map[string]string, outputPath string, saveAsPng bool) error {
+func GenerateImageFromAttributes(width, height int, attributes traits.TraitGroup, layersMap map[string]string, outputPath string, saveAsPng, transparent bool) error {
 	keys := []string{}
 	layersPaths := []string{}
 	for _, attr := range attributes {
@@ -128,10 +128,10 @@ func GenerateImageFromAttributes(width, height int, attributes traits.TraitGroup
 		keys = append(keys, key)
 		layersPaths = append(layersPaths, layersMap[key])
 	}
-	return GenerateImageFromLayers(width, height, keys, layersPaths, outputPath, saveAsPng)
+	return GenerateImageFromLayers(width, height, keys, layersPaths, outputPath, saveAsPng, transparent)
 }
 
-func GenerateImageFromLayers(width, height int, keys []string, layerPaths []string, outputPath string, saveAsPng bool) error {
+func GenerateImageFromLayers(width, height int, keys []string, layerPaths []string, outputPath string, saveAsPng, transparent bool) error {
 	newImage := image.NewNRGBA(image.Rect(0, 0, width, height))
 
 	for i, path := range layerPaths {
@@ -147,7 +147,7 @@ func GenerateImageFromLayers(width, height int, keys []string, layerPaths []stri
 			return fmt.Errorf("failed to decode image as png at path '%s': %s", path, err.Error())
 		}
 
-		if i == 0 {
+		if i == 0 && !transparent {
 			draw.Draw(newImage, newImage.Bounds(), img, image.Point{}, draw.Src)
 		} else {
 			draw.Draw(newImage, newImage.Bounds(), img, image.Point{}, draw.Over)
