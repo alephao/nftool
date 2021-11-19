@@ -29,6 +29,7 @@ nftool img gen \
       --parallel                        generate images in parallel using all your cores
       --png                             generate png images instead of jpg images
       --startingIndex int               the initial index of the image names, e.g.: you have a collection of 100 and want the names to be from 1000 to 1100, use --starrtingIndex 1000
+      --transparent                     use this flag if the background of your nft is transparent
       --width int                       the width of the generated image
 ```
 
