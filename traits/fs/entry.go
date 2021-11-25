@@ -27,10 +27,10 @@ func GenerateTraitGroupDescription(path string, out string) error {
 	}
 
 	config := Config{
-		Name:         "My Collection #{id}",
+		Name:         "My NFT Name #{id}",
 		Description:  "An awesome collection",
 		ExternalLink: "https://myexternallink.com",
-		Image:        "ipfs://myHash/{id}",
+		Image:        "https://api.xyz.com/{id}.jpg",
 		Traits:       traitGroupDescription,
 		PathMap:      pathMap,
 	}
@@ -46,9 +46,8 @@ func GenerateTraitCollection(path string, out string, amount int) error {
 	rand.Seed(time.Now().UnixNano())
 	if info.IsDir() {
 		return generateTraitCollectionFromDir(path, out, amount)
-	} else {
-		return generateTraitCollectionFromConfig(path, out, amount)
 	}
+	return generateTraitCollectionFromConfig(path, out, amount)
 }
 
 func generateTraitCollectionFromDir(path string, out string, amount int) error {

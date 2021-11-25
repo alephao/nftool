@@ -74,7 +74,7 @@ func WriteFileAsJson(v interface{}, out string) error {
 		return fmt.Errorf("error when marshaling json: %w", err)
 	}
 
-	err = ioutil.WriteFile(out, file, 0644)
+	err = ioutil.WriteFile(out, file, 0600)
 	if err != nil {
 		return fmt.Errorf("error when generating json: %w", err)
 	}
@@ -87,7 +87,7 @@ func WriteFileAsYaml(v interface{}, out string) error {
 		return fmt.Errorf("error when marshaling json: %w", err)
 	}
 
-	err = ioutil.WriteFile(out, file, 0644)
+	err = ioutil.WriteFile(out, file, 0600)
 	if err != nil {
 		return fmt.Errorf("error when generating json: %w", err)
 	}

@@ -33,9 +33,9 @@ func GenerateImagesFromCollectionAttributesJson(width, height, startingIndex int
 
 	if parallel {
 		return GenerateManyImagesFromCollectionAttributesParallel(width, height, startingIndex, collectionAttributes, config.PathMap, outDir, saveAsPng, transparent)
-	} else {
-		return GenerateManyImagesFromCollectionAttributes(width, height, startingIndex, collectionAttributes, config.PathMap, outDir, saveAsPng, transparent)
 	}
+	return GenerateManyImagesFromCollectionAttributes(width, height, startingIndex, collectionAttributes, config.PathMap, outDir, saveAsPng, transparent)
+
 }
 
 func GenerateManyImagesFromCollectionAttributesParallel(width, height, startingIndex int, collectionAttributes []traits.TraitGroup, layersMap map[string]string, outputDir string, saveAsPng, transparent bool) error {
