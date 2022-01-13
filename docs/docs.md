@@ -56,10 +56,10 @@ nftool metadata \
 **Options:**
 
 ```
-      --collection nftool traits make   path to the collection json generated via nftool traits make
-      --config nftool traits dump       path to the config json generated via nftool traits dump
-      --erc1155                         if the file names generated should follow the ERC-1155 pattern: hex value padded with zeros to size 64
-      --out string                      path to the folder where the generated metadata files will be created
+      --collection string   path to the collection json generated via "nftool traits make"
+      --config string       path to the config json generated via "nftool traits dump"
+      --erc1155             if the file names generated should follow the ERC-1155 pattern: hex value padded with zeros to size 64
+      --out string          path to the folder where the generated metadata files will be created
 ```
 
 ### `nftool opensea update`

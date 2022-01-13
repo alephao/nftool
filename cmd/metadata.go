@@ -32,9 +32,9 @@ var (
 
 func init() {
 	// metadata
-	metadataCmd.Flags().StringVar(&metadataCollectionPath, "collection", "", "path to the collection json generated via `nftool traits make`")
+	metadataCmd.Flags().StringVar(&metadataCollectionPath, "collection", "", "path to the collection json generated via \"nftool traits make\"")
 	metadataCmd.MarkFlagRequired("collection")
-	metadataCmd.Flags().StringVar(&metadataConfigPath, "config", "", "path to the config json generated via `nftool traits dump`")
+	metadataCmd.Flags().StringVar(&metadataConfigPath, "config", "", "path to the config json generated via \"nftool traits dump\"")
 	metadataCmd.MarkFlagRequired("config")
 	metadataCmd.Flags().StringVar(&metadataOutDir, "out", "", "path to the folder where the generated metadata files will be created")
 	metadataCmd.MarkFlagRequired("out")
