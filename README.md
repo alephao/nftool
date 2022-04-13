@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.png" height="200" />
+</p>
+
 # nftool
 
 A suite of tools for NFT generative art.
