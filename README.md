@@ -3,6 +3,7 @@
 </p>
 
 # nftool
+[![Tests](https://github.com/alephao/nftool/actions/workflows/test.yml/badge.svg)](https://github.com/alephao/nftool/actions/workflows/test.yml)
 
 A suite of tools for NFT generative art.
 
