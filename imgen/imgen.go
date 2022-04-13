@@ -168,7 +168,7 @@ func GenerateImageFromLayers(width, height int, keys []string, layerPaths []stri
 
 	if saveAsPng {
 		encoder := png.Encoder{
-			CompressionLevel: png.NoCompression,
+			CompressionLevel: png.DefaultCompression,
 		}
 		encoder.Encode(resultImg, newImage)
 	} else {
