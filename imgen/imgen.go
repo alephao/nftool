@@ -27,6 +27,11 @@ func GenerateImagesFromCollectionAttributesJson(width, height, startingIndex int
 		return err
 	}
 
+	err = os.MkdirAll(outDir, 0755)
+	if err != nil {
+		return err
+	}
+
 	if onlyMissing {
 		return GenerateMissingImagesFromCollectionAttributes(width, height, collectionAttributes, config.PathMap, outDir, saveAsPng, transparent)
 	}
